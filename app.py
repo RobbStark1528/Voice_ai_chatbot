@@ -1,5 +1,5 @@
 import os
-import openai
+from openai import OpenAI
 import streamlit as st
 from streamlit_chat import message
 import tempfile
@@ -15,7 +15,7 @@ import torch
 classifier = pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")
 
 # Set OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY") or st.secrets["OPENAI_API_KEY"]
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY") or st.secrets["OPENAI_API_KEY"])
 def detect_inappropriate(text):
     results = classifier(text)
     for result in results:
@@ -53,7 +53,7 @@ def generate_response(prompt):
     if detect_inappropriate(prompt):
         return "I'm sorry, but I can't respond to that content."
     
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7
