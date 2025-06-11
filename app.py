@@ -15,8 +15,7 @@ import torch
 classifier = pipeline("text-classification", model="distilbert-base-uncased-finetuned-sst-2-english")
 
 # Set OpenAI API key
-openai.api_key = os.getenv("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") or st.secrets["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"]
-
+openai.api_key = os.getenv("OPENAI_API_KEY") or st.secrets["OPENAI_API_KEY"]
 def detect_inappropriate(text):
     results = classifier(text)
     for result in results:
